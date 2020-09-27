@@ -33,15 +33,18 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		let depthTab:string = "\t".repeat(depth);
 		let ret:string = `${depthTab}${rootElement.label}\n`;
 
-		// if(rootElement.collapsibleState === vscode.TreeItemCollapsibleState.Expanded){
+		if(rootElement.collapsibleState === vscode.TreeItemCollapsibleState.Expanded){
 			// rootから下を探索して列挙
 			for(let c of rootElement.child){
-				// 子供があったら再帰的にtree
-				// if(c.collapsibleState === vscode.TreeItemCollapsibleState.Expanded){
+				if((c.collapsibleState === vscode.TreeItemCollapsibleState.Expanded) &&
+					(c.child.length > 0)){
+					// 折りたたみ解除 && 子供があったら再帰的にtree
 					ret += this.treeCmd(c,depth+1);
-				// }
+				}else{
+					ret += `${depthTab}\t${c.label}\n`;
+				}
 			}
-		// }
+		}
 
 		return ret;
 	}
@@ -55,6 +58,7 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 			let newFileColState:vscode.TreeItemCollapsibleState;
 			if(fs.statSync(fileFullPath).isDirectory() === true){
 				newFileColState = vscode.TreeItemCollapsibleState.Collapsed;
+				newFileName += "/";
 			}else{
 				newFileColState = vscode.TreeItemCollapsibleState.None;
 			}
@@ -77,11 +81,10 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 
 export class FileItem extends vscode.TreeItem {
 	public child:FileItem[] = [];
-	// public fullPath:string= "";
 	constructor(
 		public readonly label: string, 
 		public readonly fullPath: string, 
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState){
+		public collapsibleState: vscode.TreeItemCollapsibleState){
 		super(label, collapsibleState);
 	}
 	

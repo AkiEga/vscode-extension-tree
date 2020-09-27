@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { treeCmd } from './treeCmd';
 import { FileTreeItemsProvider, FileItem } from './provider/fileItemProvider';
+import { FileTreeView } from './treeView/fileTreeView';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -18,6 +19,12 @@ export function activate(context: vscode.ExtensionContext) {
 		// vscode.window.registerTreeDataProvider('fileTree', fileTreeItemsProvider);
 		fileTreeItemsProvider = new FileTreeItemsProvider(vscode.workspace.rootPath);
 		fileTreeView = vscode.window.createTreeView('fileTree', {treeDataProvider: fileTreeItemsProvider});
+		fileTreeView.onDidCollapseElement((e: vscode.TreeViewExpansionEvent<FileItem>)=>{
+			e.element.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+		});
+		fileTreeView.onDidExpandElement((e: vscode.TreeViewExpansionEvent<FileItem>)=>{
+			e.element.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+		});
 	}
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
