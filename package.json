@@ -3,7 +3,7 @@
 	"displayName": "tree",
 	"description": "a tool of tree command utilized vscode gui functions",
 	"version": "0.0.1",
-	"publisher": "akiega1",
+	"publisher": "akiega",
 	"engines": {
 		"vscode": "^1.48.0"
 	},
