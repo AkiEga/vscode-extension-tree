@@ -3,10 +3,28 @@ import {FileItem} from '../provider/fileItemProvider';
 import * as path from 'path';
 import { pseudoRandomBytes } from 'crypto';
 
-enum FORMAT_OPTION{
+enum FORMAT_MODE{
 	TAB = 0,
-	LINE
+	LINE,
+	NUM
 }
+
+interface StringMap { [key: string]: string; }
+
+let formatStrSet:StringMap[] = [
+	{
+		// for TAB mode
+		U___:"    ",
+		U_R_:"    ",
+		UBR_:"    "
+	},
+	{
+		U___:"`---",
+		UB__:"|`--",
+		U_R_:"    ",
+		UBR_:"|   "
+	}
+];
 
 export class FileTreeFormatter{
 	fileItems:FileItem[];
@@ -33,60 +51,34 @@ export class FileTreeFormatter{
 			let pastFile:FileItem|null = this.fileItems[index-1];
 			let nextFile:FileItem|null = this.fileItems[index+1];
 
-			preFix = this.genPrefix(pastFile, currentFile, nextFile, FORMAT_OPTION.LINE);
-			// ret += `${this.rPath(currentFile)}\n`;
+			preFix = this.genPrefix(pastFile, currentFile, nextFile, FORMAT_MODE.LINE);
 			ret += `${preFix}${currentFile.label}\n`;	
 		}
 		
 		return ret;
 	}
-	private genPrefix(past:FileItem, current:FileItem, next:FileItem|null, mode:FORMAT_OPTION):string{
+	private genPrefix(past:FileItem, current:FileItem, next:FileItem|null, mode:FORMAT_MODE):string{
 		let ret:string = "";
-		if(mode === FORMAT_OPTION.TAB){
-			ret += "    ".repeat(this.countFolderDepth(this.rPath(current)));
-		}else if(mode === FORMAT_OPTION.LINE){
-			let pastVsCurr:boolean[] 
-				= this.pathElemDiff(this.rPath(current),this.rPath(past));
-			let currVsNext:boolean[] = [];
-			if(next){
-			 	currVsNext = this.pathElemDiff(this.rPath(current),this.rPath(next));
-			}else{
-				for(let i=0;i<pastVsCurr.length;i++){
-					currVsNext.push(false);
-				}
-			}
-			for(let i=0;i<pastVsCurr.length;i++){
-				let situation:string = "";
-				let fr:string = "";
-				let rr:string = "";
-				if( (pastVsCurr[i]===true) &&
-					(currVsNext[i]===true)){
-					fr = "│"; // same case
-				}else
-				if( (pastVsCurr[i]===true) &&
-					(currVsNext[i]===false)){
-					fr = "└"; // bottom case
-				}else				
-				if( (pastVsCurr[i]===false) &&
-					(currVsNext[i]===true)){
-					fr = "┬";	// top case
-				}else				
-				if( (pastVsCurr[i]===false) &&
-					(currVsNext[i]===false)){
-					fr = "　"; // only case
-				}
-				// is Path End 
-				if(i!==pastVsCurr.length-1){	
-					rr = "　";
-				}else{
-					if(fr === "│"){
-						fr = "├";
-					}
-					rr = "─";
-				}
-				ret += fr + rr;
+		let pastVsCurr:boolean[] 
+		= this.pathElemDiff(this.rPath(current),this.rPath(past));
+		let currVsNext:boolean[] = [];
+		let endIdx:number = pastVsCurr.length-1;
+		if(next){
+			currVsNext = this.pathElemDiff(this.rPath(current),this.rPath(next));
+		}else{
+			for(let i=0;i<=endIdx;i++){
+				currVsNext.push(false);
 			}
 		}
+
+		for(let i=0;i<=endIdx;i++){
+			let Upper:string = pastVsCurr[i]===true?"U":"_";
+			let Bottom:string = currVsNext[i]===true?"B":"_";
+			let Right:String = (i !== endIdx)?"R":"_";
+			let preFixId:string= `${Upper + Bottom + Right}_`;
+			ret += formatStrSet[mode][preFixId];
+		}
+		
 		return ret;
 	}
 	private rPath(file:FileItem):string {
