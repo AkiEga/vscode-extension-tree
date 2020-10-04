@@ -33,7 +33,7 @@ export class FileTreeFormatter{
 			let pastFile:FileItem|null = this.fileItems[index-1];
 			let nextFile:FileItem|null = this.fileItems[index+1];
 
-			preFix = this.genPrefix(pastFile, currentFile, nextFile, FORMAT_OPTION.LINE);
+			preFix = this.genPrefix(pastFile, currentFile, nextFile, FORMAT_OPTION.TAB);
 			// ret += `${this.rPath(currentFile)}\n`;
 			ret += `${preFix}${currentFile.label}\n`;	
 		}
@@ -56,47 +56,35 @@ export class FileTreeFormatter{
 				}
 			}
 			for(let i=0;i<pastVsCurr.length;i++){
-				let isEnd:boolean = i===pastVsCurr.length-1;
+				let situation:string = "";
+				let fr:string = "";
+				let rr:string = "";
 				if( (pastVsCurr[i]===true) &&
-					(currVsNext[i]===true) &&
-					(isEnd===true)){
-					ret += "├─";
-				}else 
-				if( (pastVsCurr[i]===true) &&
-					(currVsNext[i]===true) &&
-					(isEnd===false)){
-					ret += "│　";
+					(currVsNext[i]===true)){
+					fr = "│"; // same case
 				}else
 				if( (pastVsCurr[i]===true) &&
-					(currVsNext[i]===false) &&
-					(isEnd===true)){
-						ret += "└─";
-				}else
-				if( (pastVsCurr[i]===true) &&
-					(currVsNext[i]===false) &&
-					(isEnd===false)){
-						ret += "└─";
-				}else
+					(currVsNext[i]===false)){
+					fr = "└"; // bottom case
+				}else				
 				if( (pastVsCurr[i]===false) &&
-					(currVsNext[i]===true) &&
-					(isEnd===true)){
-						ret += "└─";
-				}else
+					(currVsNext[i]===true)){
+					fr = "┬";	// top case
+				}else				
 				if( (pastVsCurr[i]===false) &&
-					(currVsNext[i]===true) &&
-					(isEnd===false)){
-						ret += "└─";
-				}else
-				if( (pastVsCurr[i]===false) &&
-					(currVsNext[i]===false) &&
-					(isEnd===true)){
-						ret += "└─";
-				}else
-				if( (pastVsCurr[i]===false) &&
-					(currVsNext[i]===false) &&
-					(isEnd===false)){
-					ret += "└　";
+					(currVsNext[i]===false)){
+					fr = "├"; // only case
 				}
+				// is Path End 
+				if(i!==pastVsCurr.length-1){	
+					rr = "　";
+				}else{
+					if(fr === "│"){
+						fr = "├";
+					}
+					rr = "─";
+				}
+				ret += fr + rr;
 			}
 		}
 		return ret;
