@@ -1,4 +1,4 @@
-import { FileTreeFormatter } from './formatter/fileTreeFormatter';
+import { FileTreeFormatter, FORMAT_MODE } from './formatter/fileTreeFormatter';
 import * as vscode from 'vscode';
 import { FileTreeItemsProvider, FileItem } from './provider/fileItemProvider';
 import {PreviewPanelManager} from './view/previewPanelManager';
@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('tree.cmd', (fileItem: FileItem) => {
 		if (fileTreeItemsProvider) {
 			let ret: FileItem[] = fileTreeItemsProvider.treeCmd(fileItem);
-			let treeViewStr:string = new FileTreeFormatter(ret).exec();
+			let treeViewStr:string = new FileTreeFormatter(ret).exec(FORMAT_MODE.KEISEN);
 			console.log(treeViewStr);
 			new PreviewPanelManager().show(treeViewStr, fileItem.fullPath);
 		}
