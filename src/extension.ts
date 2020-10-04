@@ -1,7 +1,7 @@
 import { FileTreeFormatter } from './formatter/fileTreeFormatter';
 import * as vscode from 'vscode';
-import { treeCmd } from './treeCmd';
 import { FileTreeItemsProvider, FileItem } from './provider/fileItemProvider';
+import {PreviewPanelManager} from './view/previewPanelManager';
 
 export function activate(context: vscode.ExtensionContext) {
 	let fileTreeItemsProvider: FileTreeItemsProvider | null = null;
@@ -22,27 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
 			let ret: FileItem[] = fileTreeItemsProvider.treeCmd(fileItem);
 			let treeViewStr:string = new FileTreeFormatter(ret).exec();
 			console.log(treeViewStr);
-			let retForHtml: string = escape(treeViewStr);
-			const panel = vscode.window.createWebviewPanel(
-				'treePreview',
-				`Tree from \"${fileItem.fullPath}\"`,
-				vscode.ViewColumn.Beside,
-				{}
-			);
-			const marked = require('marked');
-			let mdTxt:string =
-`
-### File Tree
-\`\`\`bash
-${treeViewStr}
-\`\`\`
-`;
-			panel.webview.html = marked(mdTxt);
-
+			new PreviewPanelManager().show(treeViewStr, fileItem.fullPath);
 		}
-
 	});
 	context.subscriptions.push(disposable);
+
+	
 }
 
 // this method is called when your extension is deactivated
