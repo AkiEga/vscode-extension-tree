@@ -33,7 +33,7 @@ export class FileTreeFormatter{
 			let pastFile:FileItem|null = this.fileItems[index-1];
 			let nextFile:FileItem|null = this.fileItems[index+1];
 
-			preFix = this.genPrefix(pastFile, currentFile, nextFile, FORMAT_OPTION.TAB);
+			preFix = this.genPrefix(pastFile, currentFile, nextFile, FORMAT_OPTION.LINE);
 			// ret += `${this.rPath(currentFile)}\n`;
 			ret += `${preFix}${currentFile.label}\n`;	
 		}
