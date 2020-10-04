@@ -12,7 +12,7 @@
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"C:/work/study/toppers_asp3_3.5"
+				"${workspaceFolder}/src"
 			],
 			"trace": true,
 			"outFiles": [

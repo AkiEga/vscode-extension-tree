@@ -29,9 +29,8 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		}
 	}
 
-	treeCmd(rootElement: FileItem, depth:number): string{
-		let depthTab:string = "\t".repeat(depth);
-		let ret:string = `${depthTab}${rootElement.label}\n`;
+	treeCmd(rootElement: FileItem): FileItem[]{
+		let ret:FileItem[] = [rootElement];
 
 		if(rootElement.collapsibleState === vscode.TreeItemCollapsibleState.Expanded){
 			// rootから下を探索して列挙
@@ -39,9 +38,10 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 				if((c.collapsibleState === vscode.TreeItemCollapsibleState.Expanded) &&
 					(c.child.length > 0)){
 					// 折りたたみ解除 && 子供があったら再帰的にtree
-					ret += this.treeCmd(c,depth+1);
+					let add = this.treeCmd(c);
+					ret.push(...add);
 				}else{
-					ret += `${depthTab}\t${c.label}\n`;
+					ret.push(c);
 				}
 			}
 		}
@@ -86,6 +86,7 @@ export class FileItem extends vscode.TreeItem {
 		public readonly fullPath: string, 
 		public collapsibleState: vscode.TreeItemCollapsibleState){
 		super(label, collapsibleState);
+
 	}
 	
 }

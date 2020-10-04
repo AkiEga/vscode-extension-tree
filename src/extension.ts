@@ -1,3 +1,4 @@
+import { FileTreeFormatter } from './formatter/fileTreeFormatter';
 import * as vscode from 'vscode';
 import { treeCmd } from './treeCmd';
 import { FileTreeItemsProvider, FileItem } from './provider/fileItemProvider';
@@ -18,9 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let disposable = vscode.commands.registerCommand('tree.cmd', (fileItem: FileItem) => {
 		if (fileTreeItemsProvider) {
-			let ret: string = fileTreeItemsProvider.treeCmd(fileItem, 0);
-			console.log(ret);
-			let retForHtml: string = escape(ret);
+			let ret: FileItem[] = fileTreeItemsProvider.treeCmd(fileItem);
+			let treeViewStr:string = FileTreeFormatter.exec(ret);
+			console.log(treeViewStr);
+			let retForHtml: string = escape(treeViewStr);
 			const panel = vscode.window.createWebviewPanel(
 				'treePreview',
 				`Tree from \"${fileItem.fullPath}\"`,
