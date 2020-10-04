@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('tree.cmd', (fileItem: FileItem) => {
 		if (fileTreeItemsProvider) {
 			let ret: FileItem[] = fileTreeItemsProvider.treeCmd(fileItem);
-			let treeViewStr:string = FileTreeFormatter.exec(ret);
+			let treeViewStr:string = new FileTreeFormatter(ret).exec();
 			console.log(treeViewStr);
 			let retForHtml: string = escape(treeViewStr);
 			const panel = vscode.window.createWebviewPanel(
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 `
 ### File Tree
 \`\`\`bash
-${ret}
+${treeViewStr}
 \`\`\`
 `;
 			panel.webview.html = marked(mdTxt);

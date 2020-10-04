@@ -8,6 +8,7 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 	fileTree:FileItem[] | undefined;
 
 	constructor(private workspaceRoot: string) { 
+		this.workspaceRoot = workspaceRoot.replace(/\\/g,"/");
 	}
 
 	getTreeItem(element: FileItem): vscode.TreeItem {
@@ -54,7 +55,7 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		let files:string[] = fs.readdirSync(cwd);
 		
 		for(let newFileName of files){
-			let fileFullPath:string = path.join(cwd,newFileName);
+			let fileFullPath:string = path.join(cwd,newFileName).replace(/\\/g,"/");
 			let newFileColState:vscode.TreeItemCollapsibleState;
 			if(fs.statSync(fileFullPath).isDirectory() === true){
 				newFileColState = vscode.TreeItemCollapsibleState.Collapsed;
