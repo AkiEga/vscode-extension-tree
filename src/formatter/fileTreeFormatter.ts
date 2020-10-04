@@ -73,7 +73,7 @@ export class FileTreeFormatter{
 				}else				
 				if( (pastVsCurr[i]===false) &&
 					(currVsNext[i]===false)){
-					fr = "├"; // only case
+					fr = "　"; // only case
 				}
 				// is Path End 
 				if(i!==pastVsCurr.length-1){	
