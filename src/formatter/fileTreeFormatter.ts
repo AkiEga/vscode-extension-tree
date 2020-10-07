@@ -48,13 +48,13 @@ export class FileTreeFormatter{
 	constructor(fileItems:FileItem[]){
 		this.fileItems = fileItems;
 		this.rootFolder = fileItems[0];		
-		this.rootFolderPath = this.rootFolder.fullPath;
+		this.rootFolderPath = this.rootFolder.resourceUri.path;
 		this.rootRootFolderPath = path.dirname(this.rootFolderPath);
 		this.rootRetPath 
-			= path.relative(this.rootFolderPath, this.rootFolder.fullPath).replace(/\\/g,"/");
+			= path.relative(this.rootFolderPath, this.rootFolder.resourceUri.path).replace(/\\/g,"/");
 	}
 	public exec(mode:FORMAT_MODE):string{
-		let header:string = `${this.rootFolder.fullPath}/\n`;
+		let header:string = `${this.rootFolder.resourceUri.path}/\n`;
 		let fileNum:number = this.fileItems.length;
 		let body:string = "";
 		let belowLinePreFixs:string[] = [];
@@ -132,7 +132,7 @@ export class FileTreeFormatter{
 		return ret;
 	}
 	private rPath(file:FileItem):string {
-		return "./"+path.relative(this.rootFolderPath, file.fullPath).replace(/\\/g,"/");
+		return "./"+path.relative(this.rootFolderPath, file.resourceUri.path).replace(/\\/g,"/");
 	}
 	private pathElemDiff(aPath:string, bPath:string):boolean[]{
 		let ret:boolean[]=[];

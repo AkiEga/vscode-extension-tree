@@ -7,8 +7,8 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 	// onDidChangeTreeData: vscode.Event<FileItem> = this._onDidChangeTreeData.event;
 	fileTree:FileItem[] | undefined;
 
-	constructor(private workspaceRoot: string) { 
-		this.workspaceRoot = workspaceRoot.replace(/\\/g,"/");
+	constructor(private workspaceRoot: vscode.Uri) { 
+		this.workspaceRoot = workspaceRoot;
 	}
 
 	getTreeItem(element: FileItem): vscode.TreeItem {
@@ -24,9 +24,12 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 			this.fileTree = [workspaceRootFileItem];
 			return Promise.resolve([workspaceRootFileItem]);
 		}else{
-			let children:FileItem[] = this.getFiles(element.fullPath);
-			element.child = children;
-			return Promise.resolve(children);
+			return new Promise((resolve)=>{
+				this.getFiles(element.resourceUri).then((children:FileItem[])=>{
+					element.child = children;
+					resolve(children);
+				});
+			});
 		}
 	}
 
@@ -50,25 +53,29 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		return ret;
 	}
 
-	private getFiles(cwd: string): FileItem[]{
-		let fileItems:FileItem[] = [];
-		let files:string[] = fs.readdirSync(cwd);
+	private getFiles(rootUri: vscode.Uri): Thenable<FileItem[]>{
+		return new Promise((resolve)=>{
+			let fileItems:FileItem[] = [];
 		
-		for(let newFileName of files){
-			let fileFullPath:string = path.join(cwd,newFileName).replace(/\\/g,"/");
-			let newFileColState:vscode.TreeItemCollapsibleState;
-			if(fs.statSync(fileFullPath).isDirectory() === true){
-				newFileColState = vscode.TreeItemCollapsibleState.Collapsed;
-				newFileName += "/";
-			}else{
-				newFileColState = vscode.TreeItemCollapsibleState.None;
-			}
-			let newFileItem:FileItem =
-				new FileItem(newFileName, fileFullPath, newFileColState);
-			fileItems.push(newFileItem);
-		}
-
-		return fileItems;
+			vscode.workspace.fs.readDirectory(rootUri).then((value)=>{
+				value.forEach((value,index,array)=>{
+					let newFileName = value[0];
+					let newFileType:vscode.FileType = value[1];
+					let newFileFullUri:vscode.Uri = vscode.Uri.joinPath(rootUri,newFileName);
+					let newFileColState:vscode.TreeItemCollapsibleState;
+					if(newFileType === vscode.FileType.Directory){
+						newFileColState = vscode.TreeItemCollapsibleState.Collapsed;
+						newFileName += "/";
+					}else{
+						newFileColState = vscode.TreeItemCollapsibleState.None;
+					}
+					let newFileItem:FileItem =
+						new FileItem(newFileName, newFileFullUri, newFileColState);
+					fileItems.push(newFileItem);
+				});
+				resolve(fileItems);
+			});
+		});
 	}
 	private pathExists(p: string): boolean {
 		try {
@@ -84,7 +91,7 @@ export class FileItem extends vscode.TreeItem {
 	public child:FileItem[] = [];
 	constructor(
 		public readonly label: string, 
-		public readonly fullPath: string, 
+		public readonly resourceUri: vscode.Uri,
 		public collapsibleState: vscode.TreeItemCollapsibleState){
 		super(label, collapsibleState);
 

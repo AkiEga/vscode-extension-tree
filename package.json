@@ -15,7 +15,7 @@
 		"url": "https://github.com/AkiEga/vscode-extension-tree"
 	},
 	"activationEvents": [
-		"onView:fileTree"
+		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -38,7 +38,8 @@
 			"explorer": [
 				{
 					"id": "fileTree",
-					"name": "File Tree"
+					"name": "File Tree",
+					"visibility": "collapsed"
 				}
 			]
 		}
