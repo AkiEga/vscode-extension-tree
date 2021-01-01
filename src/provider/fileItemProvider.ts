@@ -28,6 +28,7 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		}else{
 			return new Promise((resolve)=>{
 				this.getFiles(element.resourceUri).then((children:FileItem[])=>{
+					children = this.sortFileItems(children);
 					element.child = children;
 					resolve(children);
 				});
@@ -57,6 +58,34 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 
 	refresh(): void {
 		this._onDidChangeTreeData.fire();
+	}
+	sortFileItems(fileItems:FileItem[]): FileItem[] {
+		let folders:FileItem[] = [];
+		let files:FileItem[] = [];
+		let ret:FileItem[] = [];
+		// select folder/file
+		fileItems.forEach((f:FileItem)=>{
+			let path = f.resourceUri.fsPath;
+			if(fs.lstatSync(path).isDirectory() ){
+				folders.push(f);
+			}else{
+				files.push(f);
+			}
+		});
+		// sort folder group
+		folders.sort((a:FileItem, b:FileItem)=>{
+			return a.label.localeCompare(b.label);
+		});
+
+		// sort file group
+		files.sort((a:FileItem, b:FileItem)=>{
+			return a.label.localeCompare(b.label);
+		});
+
+		// merge
+		ret = folders.concat(files);
+
+		return ret;
 	}
 	private getFiles(rootUri: vscode.Uri): Thenable<FileItem[]>{
 		return new Promise((resolve)=>{
