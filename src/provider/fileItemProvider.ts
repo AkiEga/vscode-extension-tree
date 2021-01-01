@@ -6,6 +6,8 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 	// _onDidChangeTreeData: vscode.EventEmitter<FileItem> = new vscode.EventEmitter<FileItem>();
 	// onDidChangeTreeData: vscode.Event<FileItem> = this._onDidChangeTreeData.event;
 	fileTree:FileItem[] | undefined;
+	private _onDidChangeTreeData: vscode.EventEmitter<FileItem | undefined | null | void> = new vscode.EventEmitter<FileItem | undefined | null | void>();
+	readonly onDidChangeTreeData: vscode.Event<FileItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
 	constructor(private workspaceRoot: vscode.Uri) { 
 		this.workspaceRoot = workspaceRoot;
@@ -53,6 +55,9 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		return ret;
 	}
 
+	refresh(): void {
+		this._onDidChangeTreeData.fire();
+	}
 	private getFiles(rootUri: vscode.Uri): Thenable<FileItem[]>{
 		return new Promise((resolve)=>{
 			let fileItems:FileItem[] = [];

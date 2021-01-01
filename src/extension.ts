@@ -27,8 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 	context.subscriptions.push(disposable);
-
-	
+	disposable = vscode.commands.registerCommand('tree.refreshEntry', () =>
+		fileTreeItemsProvider?.refresh()
+	);
+	context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated

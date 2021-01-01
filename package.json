@@ -23,7 +23,15 @@
 			{
 				"command": "tree.cmd",
 				"title": "show tree cmd results from file tree view"
-			}
+			},
+			{
+                "command": "tree.refreshEntry",
+                "title": "Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            }
 		],
 		"menus": {
 			"view/item/context": [
@@ -31,6 +39,13 @@
 					"command": "tree.cmd",
 					"when": "view == fileTree",
 					"group": "tree"
+				}
+			],
+			"view/title": [
+                {
+                    "command": "tree.refreshEntry",
+                    "when": "view == fileTree",
+                    "group": "navigation"
 				}
 			]
 		},
