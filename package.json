@@ -60,7 +60,7 @@
 		}
 	},
 	"scripts": {
-		"vscode:publish": "vsce publish minor -p $(cat ./PersonalAccessToken.txt) --yarn",
+		"vscode:publish": "vsce publish minor -p $(cat ./PersonalAccessToken.txt)",
 		"vscode:prepublish": "webpack --mode production",
 		"compile": "webpack --mode development",
 		"watch": "webpack --mode development --watch",
