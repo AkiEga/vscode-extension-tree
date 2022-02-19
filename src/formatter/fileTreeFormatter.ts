@@ -54,7 +54,12 @@ export class FileTreeFormatter{
 			= path.relative(this.rootFolderPath, this.rootFolder.resourceUri.path).replace(/\\/g,"/");
 	}
 	public exec(mode:FORMAT_MODE):string{
-		let header:string = `${this.rootFolder.resourceUri.path}/\n`;
+		let header:string;
+		if (process.platform === 'win32') {
+			header = `${this.rootFolderPath.replace(/\//s, "")}/\n`;
+		} else {
+			header = `${this.rootFolderPath}/\n`;
+		}
 		let fileNum:number = this.fileItems.length;
 		let body:string = "";
 		let belowLinePreFixs:string[] = [];
