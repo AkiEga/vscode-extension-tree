@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {FileItem} from '../provider/fileItemProvider';
 import * as path from 'path';
-import { pseudoRandomBytes } from 'crypto';
 
 export enum FORMAT_MODE{
 	TAB = 0,
