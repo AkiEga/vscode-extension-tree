@@ -87,6 +87,6 @@
 	"dependencies": {
 		"debug": "4.3.1",
 		"flat": "5.0.1",
-		"marked": "^1.2.0"
+		"marked": "^4.0.10"
 	}
 }
