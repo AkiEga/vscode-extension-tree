@@ -2,7 +2,7 @@
 	"name": "tree",
 	"displayName": "tree",
 	"description": "a tool of tree command utilized vscode gui functions",
-	"version": "0.8.0",
+	"version": "0.9.0",
 	"license": "MIT",
 	"publisher": "akiega",
 	"engines": {
@@ -67,7 +67,6 @@
 					"description": "Tree view type. Please select WebViewPanel or TextEditor. \n  WebViewPanel is un-editable.\n  TextEditor is editorble"
 				}
 			}
-			
 		}
 	},
 	"scripts": {
