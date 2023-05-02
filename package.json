@@ -57,6 +57,17 @@
 					"visibility": "collapsed"
 				}
 			]
+		},
+		"configuration": {
+			"title": "tree view",
+			"properties": {
+				"tree.view-type": {
+					"type": "string",
+					"default": "WebViewPanel",
+					"description": "Tree view type. Please select WebViewPanel or TextEditor. \n  WebViewPanel is un-editable.\n  TextEditor is editorble"
+				}
+			}
+			
 		}
 	},
 	"scripts": {
