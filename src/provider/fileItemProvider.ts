@@ -3,14 +3,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> {
-	// _onDidChangeTreeData: vscode.EventEmitter<FileItem> = new vscode.EventEmitter<FileItem>();
-	// onDidChangeTreeData: vscode.Event<FileItem> = this._onDidChangeTreeData.event;
 	fileTree:FileItem[] | undefined;
 	private _onDidChangeTreeData: vscode.EventEmitter<FileItem | undefined | null | void> = new vscode.EventEmitter<FileItem | undefined | null | void>();
 	readonly onDidChangeTreeData: vscode.Event<FileItem | undefined | null | void> = this._onDidChangeTreeData.event;
+	workspaceRoots:vscode.WorkspaceFolder[] = [];
 
-	constructor(private workspaceRoot: vscode.Uri) { 
-		this.workspaceRoot = workspaceRoot;
+	constructor(workspaceRoots: vscode.WorkspaceFolder[]) { 
+		this.workspaceRoots = workspaceRoots;
 	}
 
 	getTreeItem(element: FileItem): vscode.TreeItem {
@@ -21,11 +20,15 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		if(element === undefined){
 			// for workspace root case
 			let newFileColState:vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-			let workspaceRootFileItem:FileItem =
-				new FileItem("${workspaceRoot}", this.workspaceRoot, newFileColState);
-			this.fileTree = [workspaceRootFileItem];
-			return Promise.resolve([workspaceRootFileItem]);
+			let workspaceRootFileItems:FileItem[] = [];
+			for (let ws of this.workspaceRoots) {
+				workspaceRootFileItems.push(new FileItem("${workspaceRoot} " + `(${ws.name})`, ws.uri, newFileColState));
+			}
+				
+			this.fileTree = workspaceRootFileItems;
+			return Promise.resolve(workspaceRootFileItems);
 		}else{
+			// for folder or file case
 			return new Promise((resolve)=>{
 				this.getFiles(element.resourceUri).then((children:FileItem[])=>{
 					children = this.sortFileItems(children);
@@ -128,7 +131,5 @@ export class FileItem extends vscode.TreeItem {
 		public readonly resourceUri: vscode.Uri,
 		public collapsibleState: vscode.TreeItemCollapsibleState){
 		super(label, collapsibleState);
-
 	}
-	
 }

@@ -6,18 +6,22 @@ import {PreviewPanelManager} from './view/previewPanelManager';
 export function activate(context: vscode.ExtensionContext) {
 	let fileTreeItemsProvider: FileTreeItemsProvider | null = null;
 	let fileTreeView: vscode.TreeView<FileItem>;
-	
+	let workspaceFolders: vscode.WorkspaceFolder[] = [];
+	workspaceFolders = vscode.workspace.workspaceFolders as vscode.WorkspaceFolder[];
 	// Create Tree View UI Components
-	if (vscode.workspace.workspaceFolders) {
+	if (workspaceFolders) {
 		// if exist workspace, show a file tree item
-		fileTreeItemsProvider = new FileTreeItemsProvider(vscode.workspace.workspaceFolders[0].uri);
-		fileTreeView = vscode.window.createTreeView('fileTree', { showCollapseAll:false,treeDataProvider: fileTreeItemsProvider });
+		fileTreeItemsProvider = new FileTreeItemsProvider(workspaceFolders);
+		fileTreeView = vscode.window.createTreeView('fileTree', { 		
+			showCollapseAll:false,
+			treeDataProvider: fileTreeItemsProvider
+		});
 		fileTreeView.onDidCollapseElement((e: vscode.TreeViewExpansionEvent<FileItem>) => {
 			e.element.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
 		});
 		fileTreeView.onDidExpandElement((e: vscode.TreeViewExpansionEvent<FileItem>) => {
 			e.element.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-		});
+		});	
 	}
 
 	// Add `tree` cmd to show tree view in vscode
