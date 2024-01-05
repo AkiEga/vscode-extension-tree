@@ -6,13 +6,16 @@ import {PreviewPanelManager} from './view/previewPanelManager';
 export function activate(context: vscode.ExtensionContext) {
 	let fileTreeItemsProvider: FileTreeItemsProvider | null = null;
 	let fileTreeView: vscode.TreeView<FileItem>;
-	let workspaceFolders: vscode.WorkspaceFolder[] = [];
-	workspaceFolders = vscode.workspace.workspaceFolders as vscode.WorkspaceFolder[];
+
+	// get workspace folders
+	let workspaceFolders: vscode.WorkspaceFolder[] | undefined 
+		= vscode.workspace.workspaceFolders as vscode.WorkspaceFolder[] | undefined;
+
 	// Create Tree View UI Components
 	if (workspaceFolders) {
 		// if exist workspace, show a file tree item
 		fileTreeItemsProvider = new FileTreeItemsProvider(workspaceFolders);
-		fileTreeView = vscode.window.createTreeView('fileTree', { 		
+		fileTreeView = vscode.window.createTreeView('fileTree', {	
 			showCollapseAll:false,
 			treeDataProvider: fileTreeItemsProvider
 		});
