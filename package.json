@@ -70,7 +70,7 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run package",
+		"vscode:prepublish": "npm run package && git commit -a -m 'packing before publish'",
 		"vscode:publish": "vsce publish minor -p $VSCODE_EXT_API_TOKEN",
 		"compile": "webpack",
 		"watch": "webpack --watch",
