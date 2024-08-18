@@ -2,7 +2,7 @@
 	"name": "tree",
 	"displayName": "tree",
 	"description": "a tool of tree command utilized vscode gui functions",
-	"version": "0.13.0",
+	"version": "0.12.0",
 	"license": "beerware",
 	"publisher": "akiega",
 	"engines": {
