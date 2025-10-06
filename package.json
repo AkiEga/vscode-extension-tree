@@ -6,7 +6,7 @@
 	"license": "Beerware(SEE LICENSE IN [LICENSE.md](./LICENSE.md))",
 	"publisher": "akiega",
 	"engines": {
-		"vscode": "^1.85.0"
+		"vscode": "^1.104.3"
 	},
 	"categories": [
 		"Other"

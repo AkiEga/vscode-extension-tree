@@ -7,7 +7,7 @@ A tool of tree command utilized vscode gui functions
 3. Done. Tree cmd result will be shown in right side editor.
 
 ## Requirements
-- VS Code: version 1.85.0 or later
+- VS Code: version 1.104.3 or later
 
 ## Extension Settings
 The extension currently exposes the following setting. You can change it in user or workspace `settings.json`.
