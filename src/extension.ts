@@ -44,6 +44,8 @@ export function activate(context: vscode.ExtensionContext) {
 			} else {
 				new PreviewPanelManager().show(treeViewStr, fileItem.resourceUri.path);
 			}
+		} else {
+			vscode.window.showInformationMessage('Open a folder or workspace to use Tree view.');
 		}
 	});
 	context.subscriptions.push(disposable);

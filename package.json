@@ -3,7 +3,7 @@
 	"displayName": "tree",
 	"description": "a tool of tree command utilized vscode gui functions",
 	"version": "0.15.0",
-	"license": "Beerware License",
+	"license": "Beerware(SEE LICENSE IN [LICENSE.md](./LICENSE.md))",
 	"publisher": "akiega",
 	"engines": {
 		"vscode": "^1.85.0"
@@ -19,7 +19,8 @@
 		"url": "https://github.com/AkiEga/vscode-extension-tree/issues"
 	},
 	"homepage": "https://github.com/AkiEga/vscode-extension-tree#readme",
-	"activationEvents": [],
+	"activationEvents": [
+	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
