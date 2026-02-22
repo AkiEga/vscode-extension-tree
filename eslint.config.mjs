@@ -15,5 +15,19 @@ export default tseslint.config(
             'eqeqeq': 'warn',
             'no-throw-literal': 'warn',
         }
+    },
+    {
+        files: ['webpack.config.js'],
+        languageOptions: {
+            sourceType: 'commonjs',
+            globals: {
+                require: 'readonly',
+                __dirname: 'readonly',
+                module: 'readonly'
+            }
+        },
+        rules: {
+            '@typescript-eslint/no-require-imports': 'off'
+        }
     }
 );
