@@ -8,7 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let fileTreeView: vscode.TreeView<FileItem>;
 
 	// get workspace folders
-	let workspaceFolders: vscode.WorkspaceFolder[] | undefined 
+	const workspaceFolders: vscode.WorkspaceFolder[] | undefined 
 		= vscode.workspace.workspaceFolders as vscode.WorkspaceFolder[] | undefined;
 
 	// Create Tree View UI Components
@@ -30,20 +30,29 @@ export function activate(context: vscode.ExtensionContext) {
 	// Add `tree` cmd to show tree view in vscode
 	let disposable = vscode.commands.registerCommand('tree.cmd', (fileItem: FileItem) => {
 		if (fileTreeItemsProvider) {
-			let ret: FileItem[] = fileTreeItemsProvider.treeCmd(fileItem);
-			let treeViewStr:string = new FileTreeFormatter(ret).exec(FORMAT_MODE.KEISEN);
+			const ret: FileItem[] = fileTreeItemsProvider.treeCmd(fileItem);
+			const treeViewStr:string = new FileTreeFormatter(ret).exec(FORMAT_MODE.KEISEN);
 
 			// show tree view
-			let config = vscode.workspace.getConfiguration();
-			if (config?.get<string>("tree.view-type") === "TextEditor") {
-				vscode.commands.executeCommand("workbench.action.files.newUntitledFile").then(() => {
-					showTreeViewTextEditor(treeViewStr.trimEnd(), fileItem.resourceUri.fsPath);
-				});	
-			} else if (config?.get<string>("tree.view-type") === "WebViewPanel") {
-				new PreviewPanelManager().show(treeViewStr, fileItem.resourceUri.path);
+			const config = vscode.workspace.getConfiguration();
+			if (config) {
+				const viewType = config.get<string>("tree.view-type");
+				switch (viewType) {
+					case "TextEditor":
+						vscode.commands.executeCommand("workbench.action.files.newUntitledFile").then(() => {
+							showTreeViewTextEditor(treeViewStr.trimEnd(), fileItem.resourceUri.fsPath);
+						});
+						break;
+					case "WebViewPanel":
+						new PreviewPanelManager().show(treeViewStr, fileItem.resourceUri.path);
+						break;
+					default:
+						new PreviewPanelManager().show(treeViewStr, fileItem.resourceUri.path);
+						break;
+				}
 			} else {
 				new PreviewPanelManager().show(treeViewStr, fileItem.resourceUri.path);
-			}
+			}			
 		} else {
 			vscode.window.showInformationMessage('Open a folder or workspace to use Tree view.');
 		}
@@ -58,13 +67,13 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 async function showTreeViewTextEditor(treeViewStr: string, rootPath: string): Promise<void> {
-	let editor = vscode.window.activeTextEditor;
-	let doc = editor?.document;
+	const editor = vscode.window.activeTextEditor;
+	const doc = editor?.document;
 	if (doc) {
 		vscode.languages.setTextDocumentLanguage(doc, "markdown");
 		vscode.window.activeTextEditor?.edit((editBuilder) => {
-			let startPos = new vscode.Position(0, 0);
-			let mdTxt: string = `# Tree View
+			const startPos = new vscode.Position(0, 0);
+			const mdTxt: string = `# Tree View
 ## Root path: 
 ${rootPath}
 
