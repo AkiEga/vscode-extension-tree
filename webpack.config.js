@@ -15,10 +15,10 @@ const extensionConfig = {
   entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve('dist'),
     filename: 'extension.js',
-    libraryTarget: 'commonjs2'
-    // devtoolModuleFilenameTemplate: '../[resource-path]'
+    libraryTarget: 'commonjs2',
+    devtoolModuleFilenameTemplate: 'webpack:///[resource-path]'
   },
   externals: {
     vscode: 'commonjs vscode' // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
@@ -26,7 +26,8 @@ const extensionConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    symlinks: false
   },
   module: {
     rules: [
@@ -41,7 +42,7 @@ const extensionConfig = {
       }
     ]
   },
-  devtool: 'nosources-source-map',
+  devtool: 'source-map',
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   },

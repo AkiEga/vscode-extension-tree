@@ -19,7 +19,9 @@
 		"url": "https://github.com/AkiEga/vscode-extension-tree/issues"
 	},
 	"homepage": "https://github.com/AkiEga/vscode-extension-tree#readme",
-	"activationEvents": [],
+	"activationEvents": [
+		"onStartupFinished"
+	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [

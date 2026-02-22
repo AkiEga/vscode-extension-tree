@@ -17,6 +17,11 @@
 			"outFiles": [
 				"${workspaceFolder}/dist/**/*.js"
 			],
+			"sourceMapPathOverrides": {
+				"webpack:///./*": "${workspaceFolder}/*",
+				"webpack:///*": "*",
+				"file:///*": "*"
+			},
 			"preLaunchTask": "${defaultBuildTask}"
 		},
 		{
