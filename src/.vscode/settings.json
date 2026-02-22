@@ -1,3 +1,4 @@
 {
-	"tree.view-type": "WebViewPanel"
+	// "tree.view-type": "WebViewPanel"
+	"tree.view-type": "TextEditor"
 }
