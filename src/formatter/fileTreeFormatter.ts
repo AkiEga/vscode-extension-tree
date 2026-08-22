@@ -11,7 +11,7 @@ export enum FORMAT_MODE{
 
 interface StringMap { [key: string]: string; }
 
-let formatStrSet:StringMap[] = [
+const formatStrSet:StringMap[] = [
 	// for TAB mode
 	{
 		U___:"    ",
@@ -59,18 +59,18 @@ export class FileTreeFormatter{
 		} else {
 			header = `${this.rootFolderPath}/\n`;
 		}
-		let fileNum:number = this.fileItems.length;
+		const fileNum:number = this.fileItems.length;
 		let body:string = "";
 		let belowLinePreFixs:string[] = [];
 		for(let index=fileNum-1; index>0; index--){
-			let current:FileItem = this.fileItems[index];
-			let past:FileItem|null = this.fileItems[index-1];
-			let next:FileItem|null = this.fileItems[index+1];
+			const current:FileItem = this.fileItems[index];
+			const past:FileItem|null = this.fileItems[index-1];
+			const next:FileItem|null = this.fileItems[index+1];
 
-			let pastVsCurr:boolean[] 
+			const pastVsCurr:boolean[] 
 			= this.pathElemDiff(this.rPath(current),this.rPath(past));
 			let currVsNext:boolean[] = [];
-			let depth:number = pastVsCurr.length-1;
+			const depth:number = pastVsCurr.length-1;
 			if(next){
 				currVsNext = this.pathElemDiff(this.rPath(current),this.rPath(next));
 			}else{
@@ -78,13 +78,13 @@ export class FileTreeFormatter{
 					currVsNext.push(false);
 				}
 			}
-			let currentPreFixs:string[] = [];
-			let line:string[] = [];
+			const currentPreFixs:string[] = [];
+			const line:string[] = [];
 			for(let d=0;d<=depth;d++){
-				let Upper:string = pastVsCurr[d]===true?"U":"_";
-				let Bottom:string = currVsNext[d]===true?"B":"_";
-				let Right:String = (d === depth)?"R":"_";
-				let preFixId:string= `${Upper}${Bottom}${Right}_`;
+				const Upper:string = pastVsCurr[d]===true?"U":"_";
+				const Bottom:string = currVsNext[d]===true?"B":"_";
+				const Right:string = (d === depth)?"R":"_";
+				const preFixId:string= `${Upper}${Bottom}${Right}_`;
 				currentPreFixs.push(preFixId);
 				if(index===fileNum-1){
 					line.push(formatStrSet[mode][currentPreFixs[d]]);
@@ -93,9 +93,6 @@ export class FileTreeFormatter{
 					if(belowLinePreFixs[d] === formatStrSet[mode]["____"]){
 						if((currentPreFixs[d] === "UB__")) {
 							preFix = formatStrSet[mode]["____"];
-						}else
-						if( (currentPreFixs[d] === "UBR_") ){
-							preFix = formatStrSet[mode]["U_R_"];
 						}else
 						if( (currentPreFixs[d] === "UBR_") ){
 							preFix = formatStrSet[mode]["U_R_"];
@@ -112,11 +109,11 @@ export class FileTreeFormatter{
 		return header+body;
 	}
 	private genPrefixIdx(past:FileItem, current:FileItem, next:FileItem|null):string[]{
-		let ret:string[] = [];
-		let pastVsCurr:boolean[] 
+		const ret:string[] = [];
+		const pastVsCurr:boolean[] 
 		= this.pathElemDiff(this.rPath(current),this.rPath(past));
 		let currVsNext:boolean[] = [];
-		let endIdx:number = pastVsCurr.length-1;
+		const endIdx:number = pastVsCurr.length-1;
 		if(next){
 			currVsNext = this.pathElemDiff(this.rPath(current),this.rPath(next));
 		}else{
@@ -126,10 +123,10 @@ export class FileTreeFormatter{
 		}
 
 		for(let i=0;i<=endIdx;i++){
-			let Upper:string = pastVsCurr[i]===true?"U":"_";
-			let Bottom:string = currVsNext[i]===true?"B":"_";
-			let Right:String = (i === endIdx)?"R":"_";
-			let preFixId:string= `${Upper + Bottom + Right}_`;
+			const Upper:string = pastVsCurr[i]===true?"U":"_";
+			const Bottom:string = currVsNext[i]===true?"B":"_";
+			const Right:string = (i === endIdx)?"R":"_";
+			const preFixId:string= `${Upper + Bottom + Right}_`;
 			ret.push(preFixId);
 		}
 		
@@ -139,9 +136,9 @@ export class FileTreeFormatter{
 		return "./"+path.relative(this.rootFolderPath, file.resourceUri.path).replace(/\\/g,"/");
 	}
 	private pathElemDiff(aPath:string, bPath:string):boolean[]{
-		let ret:boolean[]=[];
-		let aElems:string[] = aPath.split("/");
-		let bElems:string[] = bPath.split("/");
+		const ret:boolean[]=[];
+		const aElems:string[] = aPath.split("/");
+		const bElems:string[] = bPath.split("/");
 
 		for(let i=0;i<aElems.length-1;i++){
 			if(bElems[i]){
@@ -158,7 +155,7 @@ export class FileTreeFormatter{
 	}
 	private countFolderDepth(str:string):number{
 		let ret:number = 1;
-		let m:RegExpMatchArray|null = str.match(/(\\|\/)/g);
+		const m:RegExpMatchArray|null = str.match(/(\\|\/)/g);
 		if(m !== null){
 			ret += m.length;
 		}

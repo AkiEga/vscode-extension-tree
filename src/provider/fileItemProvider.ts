@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as path from 'path';
 
 export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> {
 	fileTree:FileItem[] | undefined;
@@ -19,9 +18,9 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 	getChildren(element?: FileItem): Thenable<FileItem[]> {
 		if(element === undefined){
 			// for workspace root case
-			let newFileColState:vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-			let workspaceRootFileItems:FileItem[] = [];
-			for (let ws of this.workspaceRoots) {
+			const newFileColState:vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+			const workspaceRootFileItems:FileItem[] = [];
+			for (const ws of this.workspaceRoots) {
 				workspaceRootFileItems.push(new FileItem("${workspaceRoot} " + `(${ws.name})`, ws.uri, newFileColState));
 			}
 				
@@ -40,15 +39,15 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 	}
 
 	treeCmd(rootElement: FileItem): FileItem[]{
-		let ret:FileItem[] = [rootElement];
+		const ret:FileItem[] = [rootElement];
 
 		if(rootElement.collapsibleState === vscode.TreeItemCollapsibleState.Expanded){
 			// rootから下を探索して列挙
-			for(let c of rootElement.child){
+			for(const c of rootElement.child){
 				if((c.collapsibleState === vscode.TreeItemCollapsibleState.Expanded) &&
 					(c.child.length > 0)){
 					// 折りたたみ解除 && 子供があったら再帰的にtree
-					let add = this.treeCmd(c);
+					const add = this.treeCmd(c);
 					ret.push(...add);
 				}else{
 					ret.push(c);
@@ -63,13 +62,13 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 		this._onDidChangeTreeData.fire();
 	}
 	sortFileItems(fileItems:FileItem[]): FileItem[] {
-		let folders:FileItem[] = [];
-		let files:FileItem[] = [];
+		const folders:FileItem[] = [];
+		const files:FileItem[] = [];
 		let ret:FileItem[] = [];
 		// select folder/file
 		fileItems.forEach((f:FileItem)=>{
-			let path = f.resourceUri.fsPath;
-			if(fs.lstatSync(path).isDirectory() ){
+			const filePath = f.resourceUri.fsPath;
+			if(fs.lstatSync(filePath).isDirectory() ){
 				folders.push(f);
 			}else{
 				files.push(f);
@@ -92,13 +91,13 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 	}
 	private getFiles(rootUri: vscode.Uri): Thenable<FileItem[]>{
 		return new Promise((resolve)=>{
-			let fileItems:FileItem[] = [];
+			const fileItems:FileItem[] = [];
 		
 			vscode.workspace.fs.readDirectory(rootUri).then((value)=>{
-				value.forEach((value,index,array)=>{
-					let newFileName = value[0];
-					let newFileType:vscode.FileType = value[1];
-					let newFileFullUri:vscode.Uri = vscode.Uri.joinPath(rootUri,newFileName);
+				value.forEach((entry)=>{
+					let newFileName = entry[0];
+					const newFileType:vscode.FileType = entry[1];
+					const newFileFullUri:vscode.Uri = vscode.Uri.joinPath(rootUri,newFileName);
 					let newFileColState:vscode.TreeItemCollapsibleState;
 					if(newFileType === vscode.FileType.Directory){
 						newFileColState = vscode.TreeItemCollapsibleState.Collapsed;
@@ -106,7 +105,7 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 					}else{
 						newFileColState = vscode.TreeItemCollapsibleState.None;
 					}
-					let newFileItem:FileItem =
+					const newFileItem:FileItem =
 						new FileItem(newFileName, newFileFullUri, newFileColState);
 					fileItems.push(newFileItem);
 				});
@@ -117,7 +116,7 @@ export class FileTreeItemsProvider implements vscode.TreeDataProvider<FileItem> 
 	private pathExists(p: string): boolean {
 		try {
 			fs.accessSync(p);
-		} catch (err) {
+		} catch {
 			return false;
 		}
 		return true;
