@@ -33,6 +33,14 @@ Choose `WebViewPanel` when you do not want to add an extra editor tab. Choose `T
 ## Known Issues
 T.B.D
 
+## Automation
+- `CI` workflow builds the extension on push / pull request.
+- `Dependabot automations` workflow auto-approves and enables auto-merge for safe Dependabot version updates.
+- `Dependabot security fix` workflow (weekly + manual) checks open Dependabot alerts and opens a pull request with `npm audit fix --package-lock-only` updates when fixes are available.
+
+## Copilot skills
+- `.github/skills/dependabot-security-autofix/SKILL.md`: reusable Copilot skill to auto-fix Dependabot security alerts, validate with `npm run package` and `npm test`, and prepare a PR in this repository's security-fix format.
+
 ## Release Notes
 Users appreciate release notes as you update your extension.
 

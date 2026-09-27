@@ -1,0 +1,84 @@
+name: Dependabot security fix
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 2 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+  security-events: read
+
+jobs:
+  npm-audit-fix:
+    name: Apply npm security fixes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Count open Dependabot alerts
+        id: alerts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          count=$(gh api "/repos/${{ github.repository }}/dependabot/alerts?state=open&per_page=100" --jq 'length')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "open dependabot alerts: $count"
+
+      - name: Install dependencies
+        if: steps.alerts.outputs.count != '0'
+        run: npm ci
+
+      - name: Apply audit fixes to lockfile
+        if: steps.alerts.outputs.count != '0'
+        run: npm audit fix --package-lock-only
+
+      - name: Build extension after dependency updates
+        if: steps.alerts.outputs.count != '0'
+        run: npm run package
+
+      - name: Run tests after dependency updates
+        if: steps.alerts.outputs.count != '0'
+        run: npm test
+
+      - name: Create pull request
+        if: steps.alerts.outputs.count != '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            package-lock.json
+            package.json
+          branch: automation/dependabot-security-fix
+          delete-branch: true
+          title: "chore: apply npm security fixes"
+          commit-message: |
+            chore: apply npm security fixes
+
+            Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+          body: |
+            ## Summary
+            - apply `npm audit fix --package-lock-only` updates for security advisories
+            - keep dependency updates constrained to npm manifests
+            - validate extension build after updates
+
+            ## Test results
+            - ✅ `npm run package` passed in this workflow run
+            - ✅ `npm test` passed in this workflow run
+            - ✅ `npm audit fix --package-lock-only` executed successfully
+
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            This PR was generated automatically by the `Dependabot security fix` workflow.
+          labels: |
+            dependencies
+            security
