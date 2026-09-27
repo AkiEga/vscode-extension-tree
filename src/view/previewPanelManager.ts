@@ -9,11 +9,16 @@ export class PreviewPanelManager {
 			{}
 		);
 
-		const escaped = this.escapeHtml(treeViewStr);
-		panel.webview.html = this.buildHtml(`Tree from: ${this.escapeHtml(title)}`, `<h3>File Tree</h3><pre>${escaped}</pre>`);
+		panel.webview.html = PreviewPanelManager.renderTreeHtml(treeViewStr, title);
 	}
 
-	private buildHtml(title: string, bodyInner: string): string {
+	public static renderTreeHtml(treeViewStr: string, title: string): string {
+		const escapedTree = PreviewPanelManager.escapeHtml(treeViewStr);
+		const escapedTitle = PreviewPanelManager.escapeHtml(title);
+		return PreviewPanelManager.buildHtml(`Tree from: ${escapedTitle}`, `<h3>File Tree</h3><pre>${escapedTree}</pre>`);
+	}
+
+	public static buildHtml(title: string, bodyInner: string): string {
 		return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +39,7 @@ ${bodyInner}
 </html>`;
 	}
 
-	private escapeHtml(src: string): string {
+	public static escapeHtml(src: string): string {
 		return src
 			.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')
